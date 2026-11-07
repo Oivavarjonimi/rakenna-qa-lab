@@ -1,0 +1,42 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+.sites-runtime/
+*.tar.gz
+*.zip
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Vite / TypeScript
+dist/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+blob-report/
+startup-debug.png
+debug-page.png
+
+# Editor and operating system
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+
