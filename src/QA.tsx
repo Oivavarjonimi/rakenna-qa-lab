@@ -16,9 +16,11 @@ import {
 } from "lucide-react";
 import type { Fault, CheckResult } from "./domain";
 import { runDomainChecks } from "./domain";
-import { cases, makePrompt } from "./learning";
+//import { cases, makePrompt } from "./learning";
 import type { TestCase } from "./learning";
 import { CodeBlock } from "./ui";
+import { cases, makePrompt } from "./learning";
+import type { TestCase } from "./learning";
 
 export function downloadText(filename: string, text: string) {
   const url = URL.createObjectURL(
