@@ -1,0 +1,260 @@
+
+# ============================================================
+# QUALITY.YML – AUTOMAATTINEN LAADUNVARMISTUS (CI)
+# ============================================================
+#
+# GitHub Actions -työnkulku React-, TypeScript- ja
+# Playwright-pohjaisen sovelluksen laadunvarmistukseen.
+#
+# Työnkulku suorittaa seuraavat toiminnot:
+#  1. Hakee projektin lähdekoodin
+#  2. Valmistelee Node.js-ympäristön
+#  3. Asentaa projektin riippuvuudet
+#  4. Tarkistaa TypeScript-tyypit
+#  5. Suorittaa automaattiset yksikkötestit
+#  6. Asentaa Playwrightin Chromium-selaimen
+#  7. Suorittaa E2E-testit selaimessa
+#  8. Rakentaa sovelluksen tuotantoversion
+#  9. Tallentaa mahdollisen Playwright-virheraportin
+#
+# ============================================================
+
+
+# ------------------------------------------------------------
+# TYÖNKULUN NIMI
+# ------------------------------------------------------------
+
+# Nimi, jolla työnkulku näkyy GitHubin Actions-välilehdellä.
+name: Quality
+
+
+# ------------------------------------------------------------
+# TYÖNKULUN KÄYNNISTYSTAPAHTUMAT
+# ------------------------------------------------------------
+
+# push:
+#   Käynnistyy, kun koodimuutokset lähetetään GitHubiin.
+#
+# pull_request:
+#   Käynnistyy esimerkiksi pull requestin avaamisen
+#   tai päivittämisen yhteydessä.
+#
+# Koska haaroja ei ole rajattu, työnkulku koskee
+# oletusarvoisesti kaikkia haaroja.
+
+on: [push, pull_request]
+
+
+# ------------------------------------------------------------
+# TYÖT (JOBS)
+# ------------------------------------------------------------
+
+# Jobs sisältää yhden tai useamman suoritettavan työn.
+jobs:
+
+  # Työn yksilöllinen tunniste.
+  quality:
+
+    # Suoritusympäristönä GitHubin Ubuntu Linux -runner.
+    # GitHub luo työlle valmiin virtuaaliympäristön.
+    runs-on: ubuntu-latest
+
+    # Työn enimmäiskesto on 10 minuuttia.
+    # Jos aikaraja ylittyy, työ keskeytetään.
+    timeout-minutes: 10
+
+    # Työn yksittäiset vaiheet.
+    # Vaiheet suoritetaan järjestyksessä.
+    steps:
+
+      # ------------------------------------------------------
+      # 1. LÄHDEKOODIN LATAAMINEN
+      # ------------------------------------------------------
+
+      # Hakee GitHub-repositorion lähdekoodin runnerille.
+      # Ilman tätä seuraavat komennot eivät pääsisi
+      # käsittelemään projektin tiedostoja.
+      #
+      # @v4 määrittää käytettävän actionin pääversion.
+      - uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # 2. NODE.JS-YMPÄRISTÖN VALMISTELU
+      # ------------------------------------------------------
+
+      # Asentaa ja ottaa käyttöön Node.js-ympäristön.
+      - uses: actions/setup-node@v4
+
+        with:
+
+          # Käytettävä Node.js-pääversio.
+          node-version: 22
+
+          # Ottaa käyttöön npm:n latausvälimuistin.
+          # Nopeuttaa riippuvuuksien lataamista
+          # seuraavissa työnkulun suorituksissa.
+          cache: npm
+
+
+      # ------------------------------------------------------
+      # 3. RIIPPUVUUKSIEN ASENNUS
+      # ------------------------------------------------------
+
+      # npm ci = Clean Install.
+      #
+      # Asentaa riippuvuudet package-lock.json-tiedoston
+      # mukaisesti puhtaaseen node_modules-hakemistoon.
+      #
+      # Sopii CI-ympäristöön, koska riippuvuudet
+      # pysyvät toistettavina eri suorituksissa.
+      - run: npm ci
+
+
+      # ------------------------------------------------------
+      # 4. TYPESCRIPT-TYYPPITARKISTUS
+      # ------------------------------------------------------
+
+      # Suorittaa package.json-tiedoston typecheck-skriptin.
+      #
+      # Esimerkiksi:
+      # "typecheck": "tsc --noEmit"
+      #
+      # Tarkistaa muun muassa:
+      # - Muuttujien ja parametrien tyypit
+      # - Funktioiden palautusarvot
+      # - Interface- ja union-tyypit
+      # - Virheelliset tyyppimääritykset
+      #
+      # TypeScript-virhe keskeyttää normaalin etenemisen.
+      - run: npm run typecheck
+
+
+      # ------------------------------------------------------
+      # 5. AUTOMAATTISET TESTIT
+      # ------------------------------------------------------
+
+      # Suorittaa package.json-tiedoston test-skriptin.
+      #
+      # Esimerkiksi Vitest:
+      # "test": "vitest run"
+      #
+      # Testeillä voidaan tarkistaa muun muassa:
+      # - Funktioiden palautusarvot
+      # - Kustannuslaskennan oikeellisuus
+      # - Tehtävälistan suodatustoiminnot
+      # - Datan validointi
+      #
+      # Epäonnistunut testi merkitsee työn epäonnistuneeksi.
+      - run: npm test
+
+
+      # ------------------------------------------------------
+      # 6. PLAYWRIGHT-SELAIMEN ASENNUS
+      # ------------------------------------------------------
+
+      # Asentaa Playwrightin tarvitseman Chromium-selaimen.
+      #
+      # --with-deps:
+      #   Asentaa myös tarvittavat Linux-riippuvuudet.
+      #
+      # chromium:
+      #   Asennetaan Chromium, ei Firefoxia tai WebKitiä.
+      #
+      # Selain tarvitaan käyttöliittymän E2E-testaukseen.
+      - run: npx playwright install --with-deps chromium
+
+
+      # ------------------------------------------------------
+      # 7. END-TO-END-TESTIT (E2E)
+      # ------------------------------------------------------
+
+      # Suorittaa package.json-tiedoston test:e2e-skriptin.
+      #
+      # Esimerkiksi:
+      # "test:e2e": "playwright test"
+      #
+      # E2E-testit voivat tarkistaa esimerkiksi:
+      # - Sovelluksen käynnistymisen
+      # - Sivujen latautumisen
+      # - Painikkeiden toiminnan
+      # - Lomakkeiden täyttämisen
+      # - Tehtävien lisäämisen ja muokkaamisen
+      # - Tehtävälistan suodattamisen
+      #
+      # HUOM:
+      # Sovelluksen testipalvelimen on oltava käytettävissä.
+      # Se voidaan käynnistää Playwrightin webServer-asetuksella.
+      - run: npm run test:e2e
+
+
+      # ------------------------------------------------------
+      # 8. TUOTANTOVERSION RAKENTAMINEN
+      # ------------------------------------------------------
+
+      # Suorittaa package.json-tiedoston build-skriptin.
+      #
+      # Vite/React-projektissa esimerkiksi:
+      # "build": "tsc -b && vite build"
+      #
+      # Tarkistaa, että sovellus voidaan kääntää
+      # tuotantokäyttöä varten.
+      #
+      # Vite tuottaa tiedostot yleensä dist/-hakemistoon.
+      #
+      # Tämä vaihe ei julkaise sovellusta palvelimelle.
+      - run: npm run build
+
+
+      # ------------------------------------------------------
+      # 9. PLAYWRIGHT-VIRHERAPORTIN TALLENTAMINEN
+      # ------------------------------------------------------
+
+      # Tallentaa mahdollisen Playwright-testiraportin
+      # GitHub Actionsin ladattavaksi artefaktiksi.
+      #
+      # Raportista voidaan tutkia esimerkiksi:
+      # - Epäonnistuneita testejä
+      # - Virheilmoituksia
+      # - Testien suoritusvaiheita
+      # - Mahdollisia kuvakaappauksia ja trace-tietoja
+      #
+      # Raportin tarkka sisältö riippuu
+      # Playwrightin asetuksista.
+      - uses: actions/upload-artifact@v4
+
+        # Suoritetaan vain, jos jokin aiempi vaihe
+        # on epäonnistunut.
+        if: failure()
+
+        with:
+
+          # Artefaktin nimi GitHub Actionsissa.
+          name: playwright-report
+
+          # Hakemisto, josta raportti ladataan.
+          # Hakemiston täytyy olla olemassa,
+          # jotta raporttitiedostoja voidaan tallentaa.
+          path: playwright-report/
+
+          # Raportin säilytysaika GitHubissa: 7 päivää.
+          retention-days: 7
+
+
+# ============================================================
+# TYÖNKULUN LOPPU
+# ============================================================
+#
+# Onnistunut suoritus:
+#   Kaikki tarkistukset ja testit läpäisty.
+#
+# Epäonnistunut suoritus:
+#   Virheellinen vaihe näkyy GitHub Actionsissa.
+#   Playwright-raportti tallennetaan, jos se on saatavilla.
+#
+# HUOM:
+#   Tavalliset seuraavat vaiheet ohitetaan, jos aiempi
+#   vaihe epäonnistuu. Raporttivaiheen if: failure()
+#   mahdollistaa sen suorittamisen myös virhetilanteessa.
+#
+# ============================================================

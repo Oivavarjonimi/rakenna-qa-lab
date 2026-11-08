@@ -1,24 +1,286 @@
+
+# ============================================================
+# QUALITY.YML – AUTOMATED QUALITY ASSURANCE (CI)
+# ============================================================
+#
+# GitHub Actions workflow for automated quality assurance
+# of a React, TypeScript, and Playwright-based application.
+#
+# This workflow performs the following operations:
+#  1. Checks out the project source code
+#  2. Sets up the Node.js environment
+#  3. Installs project dependencies
+#  4. Performs TypeScript type checking
+#  5. Runs automated unit tests
+#  6. Installs the Playwright Chromium browser
+#  7. Executes end-to-end (E2E) tests
+#  8. Builds the production version of the application
+#  9. Uploads the Playwright report if a failure occurs
+#
+# ============================================================
+
+
+# ------------------------------------------------------------
+# WORKFLOW NAME
+# ------------------------------------------------------------
+
+# Name displayed in the GitHub Actions tab.
 name: Quality
+
+
+# ------------------------------------------------------------
+# WORKFLOW TRIGGERS
+# ------------------------------------------------------------
+
+# push:
+#   Triggers the workflow when code changes are pushed
+#   to the GitHub repository.
+#
+# pull_request:
+#   Triggers the workflow when a pull request is opened,
+#   updated, or reopened.
+#
+# Since no branches are specified, the workflow applies
+# to all branches by default.
+
 on: [push, pull_request]
+
+
+# ------------------------------------------------------------
+# JOB DEFINITIONS
+# ------------------------------------------------------------
+
+# A workflow may contain one or more jobs.
 jobs:
+
+  # Unique identifier for this job.
   quality:
+
+    # Run the job on a GitHub-hosted Ubuntu Linux runner.
+    # GitHub provides a temporary virtual environment
+    # for executing the workflow.
     runs-on: ubuntu-latest
+
+    # Maximum execution time for the entire job.
+    # The job is automatically cancelled after 10 minutes
+    # if it has not completed.
     timeout-minutes: 10
+
+    # Individual steps executed sequentially.
     steps:
+
+      # ------------------------------------------------------
+      # 1. CHECK OUT SOURCE CODE
+      # ------------------------------------------------------
+
+      # Downloads the repository source code to the runner.
+      #
+      # This allows subsequent steps to access the project
+      # files, configuration, scripts, and tests.
+      #
+      # @v4 specifies the major version of the action.
       - uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # 2. SET UP THE NODE.JS ENVIRONMENT
+      # ------------------------------------------------------
+
+      # Installs and configures the required Node.js runtime.
       - uses: actions/setup-node@v4
+
         with:
+
+          # Node.js major version used by the project.
           node-version: 22
+
+          # Enables caching of downloaded npm packages.
+          #
+          # Reusing the npm cache can improve the performance
+          # of subsequent workflow executions.
+          #
+          # This does not cache the node_modules directory.
           cache: npm
+
+
+      # ------------------------------------------------------
+      # 3. INSTALL PROJECT DEPENDENCIES
+      # ------------------------------------------------------
+
+      # npm ci = Clean Install.
+      #
+      # Installs dependencies according to package-lock.json.
+      #
+      # Provides a clean and reproducible installation
+      # suitable for Continuous Integration environments.
+      #
+      # Unlike npm install, npm ci does not update
+      # the package-lock.json file.
+      #
+      # Requires an existing, consistent lock file.
       - run: npm ci
+
+
+      # ------------------------------------------------------
+      # 4. TYPESCRIPT TYPE CHECKING
+      # ------------------------------------------------------
+
+      # Executes the typecheck script defined in package.json.
+      #
+      # Example:
+      # "typecheck": "tsc --noEmit"
+      #
+      # Checks for issues such as:
+      # - Incorrect variable and parameter types
+      # - Invalid function return types
+      # - Interface and union type violations
+      # - Incorrect TypeScript declarations
+      #
+      # If type checking fails, the job is marked as failed
+      # and normal subsequent steps are skipped.
       - run: npm run typecheck
+
+
+      # ------------------------------------------------------
+      # 5. RUN AUTOMATED TESTS
+      # ------------------------------------------------------
+
+      # Executes the test script defined in package.json.
+      #
+      # Example using Vitest:
+      # "test": "vitest run"
+      #
+      # Unit tests may verify:
+      # - Function return values
+      # - Business logic calculations
+      # - Task filtering operations
+      # - Data validation rules
+      # - Individual application components
+      #
+      # A failing test causes the job to fail.
       - run: npm test
+
+
+      # ------------------------------------------------------
+      # 6. INSTALL PLAYWRIGHT BROWSER
+      # ------------------------------------------------------
+
+      # Installs the Chromium browser required by Playwright.
+      #
+      # --with-deps:
+      #   Also installs required Linux system dependencies.
+      #
+      # chromium:
+      #   Installs Chromium rather than Firefox or WebKit.
+      #
+      # The browser is used to execute automated
+      # end-to-end tests against the application.
       - run: npx playwright install --with-deps chromium
+
+
+      # ------------------------------------------------------
+      # 7. RUN END-TO-END (E2E) TESTS
+      # ------------------------------------------------------
+
+      # Executes the test:e2e script defined in package.json.
+      #
+      # Example:
+      # "test:e2e": "playwright test"
+      #
+      # E2E tests may verify:
+      # - Application startup
+      # - Page navigation and rendering
+      # - Button interactions
+      # - Form submission and validation
+      # - Creating and editing tasks
+      # - Task filtering functionality
+      # - Complete user workflows
+      #
+      # NOTE:
+      # The application must be accessible during testing.
+      # A development server can be started automatically
+      # using the webServer option in playwright.config.ts.
+      #
+      # If an E2E test fails, the job is marked as failed.
       - run: npm run test:e2e
+
+
+      # ------------------------------------------------------
+      # 8. BUILD THE PRODUCTION APPLICATION
+      # ------------------------------------------------------
+
+      # Executes the build script defined in package.json.
+      #
+      # Example for a Vite/React application:
+      # "build": "tsc -b && vite build"
+      #
+      # Verifies that the application can be successfully
+      # compiled and bundled for production use.
+      #
+      # Vite typically generates production files
+      # in the dist/ directory.
+      #
+      # This step does not deploy the application.
       - run: npm run build
+
+
+      # ------------------------------------------------------
+      # 9. UPLOAD PLAYWRIGHT FAILURE REPORT
+      # ------------------------------------------------------
+
+      # Uploads the Playwright test report as a downloadable
+      # artifact in GitHub Actions.
+      #
+      # Depending on the Playwright configuration,
+      # the report may contain:
+      # - Failed test cases
+      # - Error messages
+      # - Test execution details
+      # - Screenshots
+      # - Trace recordings
+      #
+      # The report is only available if the reporting
+      # directory has been generated by the test runner.
       - uses: actions/upload-artifact@v4
+
+        # Execute this step only when a previous step fails.
+        #
+        # This condition allows the report upload step
+        # to run even when the normal execution flow
+        # has been interrupted by a failure.
         if: failure()
+
         with:
+
+          # Artifact name displayed in GitHub Actions.
           name: playwright-report
+
+          # Directory containing the Playwright test report.
+          #
+          # The directory must exist for report files
+          # to be uploaded.
           path: playwright-report/
+
+          # Keep the uploaded artifact for seven days.
           retention-days: 7
+
+
+# ============================================================
+# END OF WORKFLOW
+# ============================================================
+#
+# SUCCESSFUL EXECUTION:
+#   All checks, tests, and build steps have passed.
+#
+# FAILED EXECUTION:
+#   The failing step is displayed in GitHub Actions.
+#   A Playwright report is uploaded if one is available.
+#
+# IMPORTANT:
+#   By default, subsequent steps are skipped when a
+#   previous step fails.
+#
+#   The "if: failure()" condition allows the artifact
+#   upload step to execute after a failure.
+#
+# ============================================================

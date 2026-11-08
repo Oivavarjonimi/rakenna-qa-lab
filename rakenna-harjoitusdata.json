@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "tasks": [
+    {
+      "id": "t1",
+      "projectId": "p1",
+      "title": "Perustusten tarkastus",
+      "status": "done",
+      "priority": "high",
+      "due": "2026-10-28",
+      "assignee": "Mikko Virtanen",
+      "cost": 12400,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t2",
+      "projectId": "p1",
+      "title": "Runkotyön laadunvarmistus",
+      "status": "doing",
+      "priority": "high",
+      "due": "2026-11-12",
+      "assignee": "Anna Korhonen",
+      "cost": 18600,
+      "dependsOn": "t1",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t3",
+      "projectId": "p1",
+      "title": "LVI-suunnitelmien hyväksyntä",
+      "status": "doing",
+      "priority": "high",
+      "due": "2026-11-06",
+      "assignee": "Juha Laine",
+      "cost": 7200,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t4",
+      "projectId": "p1",
+      "title": "Julkisivumateriaalien tilaus",
+      "status": "todo",
+      "priority": "medium",
+      "due": "2026-11-18",
+      "assignee": "Anna Korhonen",
+      "cost": 34200,
+      "dependsOn": "t2",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t5",
+      "projectId": "p1",
+      "title": "Työmaan turvallisuuskierros",
+      "status": "done",
+      "priority": "medium",
+      "due": "2026-11-05",
+      "assignee": "Mikko Virtanen",
+      "cost": 1800,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t6",
+      "projectId": "p1",
+      "title": "Sähköasennusten aloituspalaveri",
+      "status": "todo",
+      "priority": "medium",
+      "due": "2026-11-20",
+      "assignee": "Juha Laine",
+      "cost": 2400,
+      "dependsOn": "t3",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t7",
+      "projectId": "p1",
+      "title": "Viikkoraportin kokoaminen",
+      "status": "doing",
+      "priority": "low",
+      "due": "2026-11-10",
+      "assignee": "Anna Korhonen",
+      "cost": 800,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t8",
+      "projectId": "p1",
+      "title": "Ikkunatoimituksen vastaanotto",
+      "status": "todo",
+      "priority": "medium",
+      "due": "2026-11-25",
+      "assignee": "Mikko Virtanen",
+      "cost": 28000,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t9",
+      "projectId": "p1",
+      "title": "Kosteusmittausten dokumentointi",
+      "status": "todo",
+      "priority": "high",
+      "due": "2026-11-15",
+      "assignee": "Juha Laine",
+      "cost": 3200,
+      "dependsOn": "t2",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t10",
+      "projectId": "p2",
+      "title": "Purkutyön vastaanottotarkastus",
+      "status": "done",
+      "priority": "high",
+      "due": "2026-10-20",
+      "assignee": "Mikko Virtanen",
+      "cost": 22000,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t11",
+      "projectId": "p2",
+      "title": "Ilmanvaihdon tarkastus",
+      "status": "doing",
+      "priority": "high",
+      "due": "2026-11-05",
+      "assignee": "Juha Laine",
+      "cost": 14000,
+      "dependsOn": "t10",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t12",
+      "projectId": "p2",
+      "title": "Pintamateriaalien hyväksyntä",
+      "status": "todo",
+      "priority": "medium",
+      "due": "2026-11-22",
+      "assignee": "Anna Korhonen",
+      "cost": 18500,
+      "dependsOn": "t11",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t13",
+      "projectId": "p3",
+      "title": "Rakennusluvan katselmointi",
+      "status": "done",
+      "priority": "high",
+      "due": "2026-10-24",
+      "assignee": "Anna Korhonen",
+      "cost": 6500,
+      "dependsOn": null,
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t14",
+      "projectId": "p3",
+      "title": "Pohjatutkimusten tarkastus",
+      "status": "doing",
+      "priority": "high",
+      "due": "2026-11-13",
+      "assignee": "Mikko Virtanen",
+      "cost": 18600,
+      "dependsOn": "t13",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    },
+    {
+      "id": "t15",
+      "projectId": "p3",
+      "title": "Runkourakan kilpailutus",
+      "status": "todo",
+      "priority": "medium",
+      "due": "2026-11-28",
+      "assignee": "Juha Laine",
+      "cost": 42000,
+      "dependsOn": "t14",
+      "description": "Varmista työn laatu, kirjaa havainnot ja sovi hyväksynnästä vastuuhenkilön kanssa."
+    }
+  ],
+  "documents": [
+    {
+      "id": "d1",
+      "projectId": "p1",
+      "title": "Pohjapiirustus, 1. kerros",
+      "category": "ARK",
+      "versions": [
+        {
+          "version": 1,
+          "note": "Alkuperäinen suunnitelma",
+          "date": "2026-09-12",
+          "author": "Anna Korhonen"
+        },
+        {
+          "version": 2,
+          "note": "Huonejaon tarkennukset",
+          "date": "2026-10-15",
+          "author": "Anna Korhonen"
+        },
+        {
+          "version": 3,
+          "note": "Oviaukkojen mitoitus päivitetty",
+          "date": "2026-11-05",
+          "author": "Anna Korhonen"
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "projectId": "p1",
+      "title": "LVI-suunnitelma",
+      "category": "LVI",
+      "versions": [
+        {
+          "version": 1,
+          "note": "Tarkastettavaksi",
+          "date": "2026-11-03",
+          "author": "Juha Laine"
+        }
+      ]
+    },
+    {
+      "id": "d3",
+      "projectId": "p1",
+      "title": "Työturvallisuussuunnitelma",
+      "category": "TUR",
+      "versions": [
+        {
+          "version": 1,
+          "note": "Hyväksytty työmaakäyttöön",
+          "date": "2026-10-20",
+          "author": "Mikko Virtanen"
+        }
+      ]
+    },
+    {
+      "id": "d4",
+      "projectId": "p2",
+      "title": "Koulun pohjapiirustus",
+      "category": "ARK",
+      "versions": [
+        {
+          "version": 1,
+          "note": "Lähtötiedot",
+          "date": "2026-09-01",
+          "author": "Anna Korhonen"
+        }
+      ]
+    },
+    {
+      "id": "d5",
+      "projectId": "p3",
+      "title": "Asemapiirustus",
+      "category": "ARK",
+      "versions": [
+        {
+          "version": 1,
+          "note": "Lupakuva",
+          "date": "2026-10-22",
+          "author": "Anna Korhonen"
+        }
+      ]
+    }
+  ],
+  "completedLessons": [
+    "js",
+    "playwright",
+    "ts",
+    "react"
+  ]
+}
